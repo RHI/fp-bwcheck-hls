@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Automatic Bitrate Selector / Bandwidth Monitor</title>
+	  	
+	  	<script src="../flowplayer/flowplayer-3.2.11.min.js"></script>
+	    <!-- jQuery requierd by ramp.flowplayer.bwcheck-hls.js -->
+	    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	    <!-- requires jQuery -->
+	    <script src="../ramp.flowplayer.bwcheck-hls-1.0.3.js"></script>
+		
+		<link rel="stylesheet" href="qunit/qunit-1.11.0.css">
+		<script src="qunit/qunit-1.11.0.js"></script>
+
+		<style>
+			.waiting {
+				background: red;
+				color: #fff;
+				font-weight: bold;
+			}
+		</style>
+
+	</head>
+	<body>
+		<a
+            href=""
+            style="display:block;width:425x;height:300px;"
+            id="bitrate">
+		</a>
+
+		Set Bandwidth To:
+	    <button id="1500" data-bitrate="1092" class="bandwidth">1500</button>
+	    <button id="1200" data-bitrate="770" class="bandwidth">1200</button>
+	    <button id="900" data-bitrate="610" class="bandwidth">900</button>
+	    <button id="800" data-bitrate="449" class="bandwidth">800</button>
+	    <button id="475" data-bitrate="274" class="bandwidth">475</button>
+	    <button id="350" data-bitrate="197" class="bandwidth">350</button>
+        <button id="100" data-bitrate="197" class="bandwidth">100</button>
+
+        <br><br>
+        Use real bandwidth measurement: 
+        <button id="reset-bandwidth">reset</button>
+
+		<div id="qunit"></div>
+		<div id="qunit-fixture"></div>
+
+		<!-- Flowplayer installation and configuration -->
+    <script type="text/javascript" >
+        flowplayer("bitrate", "../flowplayer/flowplayer-3.2.15.swf", {
+            // configure the required plugins
+            "plugins":  {
+
+                "httpstreaming": {
+                    "url": '../flowplayer/flowplayer.httpstreaminghls-3.2.10.swf'
+
+
+                },
+                "menu": {
+                    "url": "../flowplayer/flowplayer.menu.swf",
+                    "items": [
+                        // you can have an optional label as the first item
+                        // the bitrate specific items are filled here based on the clip's bitrates
+                        { "label": "select bitrate:", "enabled": false }
+                    ],
+                    "onSelect": function( a ) {
+                        debugger;
+                    }
+                },
+                "brselect": {
+                    "url": "../flowplayer/flowplayer.bitrateselect-3.2.13.swf",
+                    "menu": true,
+                    "onStreamSwitchBegin": function (newItem, currentItem) {
+                        $f("bitrate").getPlugin('content').setHtml("Will switch to: " + newItem.streamName +
+                                " from " + currentItem.streamName);
+                    },
+                    "onStreamSwitch": function (newItem) {
+                        $f("bitrate").getPlugin('content').setHtml("Switched to: " + newItem.streamName + " with bitrate: " + newItem.bitrate);
+                    }
+                },
+                "content": {
+                    "url": '../flowplayer/flowplayer.content.swf',
+                    "bottom": 30, left: 0, width: 250, height: 150,
+                    "backgroundColor": 'transparent', backgroundGradient: 'none', border: 0,
+                    "textDecoration": 'outline',
+                    "style": {
+                        "body": {
+                            "fontSize": 14,
+                            "fontFamily": 'Arial',
+                            "textAlign": 'center',
+                            "color": '#ffffff'
+                        }
+                    }
+                }
+
+            },
+
+
+            "clip": {
+                "url": "http://publishing.ramp.com/thumbnails/cached_media/0006/0006684/0006684332/6684332_ios.stream/6684332enc_24286603.m3u8",
+                "ipadUrl": "http://184.72.239.149/vod/smil:bigbuckbunnyiphone.smil/playlist.m3u8",
+                "urlResolvers": ["httpstreaming","brselect"],
+                "provider": "httpstreaming",
+                "autoPlay": false,
+                "bitrates": {
+                    "default": 770,
+                    "labels": { "300": "Low", "400": "Medium", "600": "High"  }
+                }
+            },
+            "log": {
+                "level": '',
+                "filter": 'org.osmf.*, org.electroteque.m3u8.*, org.flowplayer.bitrateselect.*'
+            }
+
+        }).rampBWHLS({
+            interval: 7000,
+            file: "../test2.png",
+            fileSize: 65536,
+            debug: true
+        });
+
+        // insert the unit test JS once the player is loaded
+        $f().onLoad(function() {
+        	var scriptTag = document.createElement("script");
+        	scriptTag.src = "unit/tests.js";
+        	document.getElementsByTagName("body")[0].appendChild( scriptTag );
+        });
+	</script>	
+
+		
+		
+	</body>
+</html>
