@@ -1,0 +1,138 @@
+
+
+
+
+
+<!doctype html>
+<html>
+<head>
+    
+    <title>Bandwidth detection for HTTP Streaming : Flowplayer</title>
+
+    <link rel="shortcut icon" href="http://flash.flowplayer.org/favicon.ico">
+    <!-- standalone page styling. can be removed -->
+    <style>
+        body{
+            width:982px;
+            margin:50px auto;
+            font-family:sans-serif;
+        }
+        a:active {
+            outline:none;
+        }
+        :focus { -moz-outline-style:none; }
+
+        .palert {
+            padding: 12px;
+            color: black;
+            background-color: #ededed;
+            box-shadow: none;
+        }
+    </style>
+
+    
+    
+    <!-- flowplayer javascript component -->
+    <script src="http://releases.flowplayer.org/js/flowplayer-3.2.12.min.js"></script>
+
+    </head>
+
+<body>
+    <!-- set up player container named "httpstreaming-dynamic" -->
+<a class="player" id="httpstreaming-dynamic" style="display:block;width:660px;height:350px;"></a>
+
+<!-- this script block will install Flowplayer inside previous A tag -->
+<script>
+flowplayer('httpstreaming-dynamic', 'flowplayer-3.2.15.swf', {
+    clip: {
+        // the manifest file
+        url: 'http://publishing.ramp.com/thumbnails/cached_media/0006/0006684/0006684332/6684332_ios.stream/6684332enc_24286603.m3u8',
+
+        // we need 2 urlResolvers
+        urlResolvers: ['httpstreaming'/*,'brselect'*/,'bwcheck'],
+
+        // use the httpstreaming plugin
+        provider: 'httpstreaming',
+
+        // bitrates: [
+        //     { url: "6684332enc_24286603-800k.m3u8", bitrate: 770, sd: true, isDefault: true },
+        // ],
+
+        bitrates: {
+            default: 770
+        },
+
+        // directory where the manifest and video fragments are stored
+        baseUrl: 'http://publishing.ramp.com/thumbnails/cached_media/0006/0006684/0006684332/6684332_ios.stream/',
+
+        autoPlay: false
+    },
+    plugins: {
+        httpstreaming: {
+            url: "flowplayer.httpstreaminghls-3.2.10.swf"
+        },
+
+        bwcheck: {
+            url: 'flowplayer.bwcheck-httpstreaming-3.2.12.swf',
+            dynamic: true,
+            serverType: "http",
+            // show the selected file in the content box
+            // usually omitted in production
+            onStreamSwitchBegin: function (newItem, currentItem) {
+                var content = $f('httpstreaming-dynamic').getPlugin('content');
+                var message = 'Will switch to: ' +
+                               newItem.streamName +
+                                ' from ' +
+                                currentItem.streamName;
+                content.setHtml(message);
+                console.log("switching to: ", currentItem.streamName);
+            },
+            onStreamSwitch: function (newItem) {
+                var content = $f('httpstreaming-dynamic').getPlugin('content');
+                var message = 'Switched to: ' + newItem.streamName;
+                content.setHtml(message);
+                console.log("switched to: ", newItem.streamName);
+            }
+        },
+        //  menu: {
+        //     url: "flowplayer.menu.swf",
+        //     items: [
+        //         // you can have an optional label as the first item
+        //         // the bitrate specific items are filled here based on the clip's bitrates
+        //         { "label": "select bitrate:", "enabled": false }
+        //     ],
+        //     onSelect: function( a ) {
+
+        //     }
+        // },
+        // brselect: {
+        //     url: "flowplayer.bitrateselect-3.2.13.swf",
+        //     menu: true,
+        //     onStreamSwitchBegin: function (newItem, currentItem) {
+        //         $f("bitrate").getPlugin('content').setHtml("Will switch to: " + newItem.streamName +
+        //                 " from " + currentItem.streamName);
+        //     },
+        //     onStreamSwitch: function (newItem) {
+        //         $f("bitrate").getPlugin('content').setHtml("Switched to: " + newItem.streamName + " with bitrate: " + newItem.bitrate);
+        //     }
+        // },
+        content: {
+            url: 'flowplayer.content.swf',
+            bottom: 30, left: 0, width: 250, height: 150,
+            backgroundColor: 'transparent', backgroundGradient: 'none', border: 0,
+            textDecoration: 'outline',
+            style: {
+                body: {
+                    fontSize: 14,
+                    fontFamily: 'Arial',
+                    textAlign: 'center',
+                    color: '#ffffff'
+                }
+            }
+        }
+    }
+});
+</script>
+</body>
+
+</html>
