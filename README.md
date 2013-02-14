@@ -34,7 +34,7 @@ Like other Flowplayer JavaScript Plugins, rampBWHLS is called on the flowplayer 
 
 Demo
 --
-[Demo](http://rhi.github.com/fp-bwcheck-hls/example.html)
+[This Demo](http://rhi.github.com/fp-bwcheck-hls/example.html) allows artifically manipulating the bandwidth measurement in order to trigger bitrate adjustment.
 
 Example
 --------------
