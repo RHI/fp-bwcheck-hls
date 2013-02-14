@@ -32,6 +32,9 @@ Like other Flowplayer JavaScript Plugins, rampBWHLS is called on the flowplayer 
 | fileSize  | Size of file referenced by file |
 | debug     | true/false |
 
+Demo
+--
+[Demo](http://rhi.github.com/fp-bwcheck-hls/example.html)
 
 Example
 --------------
