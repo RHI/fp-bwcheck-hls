@@ -16,7 +16,7 @@ Implementation
 
 Like other Flowplayer JavaScript Plugins, rampBWHLS is called on the flowplayer object
 
-````
+````javascript
 .rampBWHLS({
     interval: 7000,
     file: "../test2.png",
@@ -38,7 +38,7 @@ Demo
 
 Example
 --------------
-````
+````javascript
 flowplayer("bitrate", "../flowplayer/flowplayer-3.2.15.swf", {
     // configure the required plugins
     "plugins":  {
